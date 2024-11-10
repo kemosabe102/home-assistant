@@ -5,24 +5,12 @@ configs:
   params:
     server.disable.auth: true
     server.insecure: true
-
-  repositories:
-    home-assistant:
-      url: http://pajikos.github.io/home-assistant-helm-chart/
-      name: pajikos
-      type: helm
-    prometheus:
-      url: https://prometheus-community.github.io/helm-charts
-      name: prometheus-community
-      type: helm
-    grafana:
-      url: https://grafana.github.io/helm-charts
-      name: grafana
-      type: helm
-    nginx:
-      url: https://kubernetes.github.io/ingress-nginx
-      name: ingress-nginx
-      type: helm
+    
+    # -- Enables [Applications in any namespace]
+    ## List of additional namespaces where applications may be created in and reconciled from.
+    ## The namespace where Argo CD is installed to will always be allowed.
+    ## Set comma-separated list. (e.g. app-team-one, app-team-two)
+    application.namespaces: "home-assistant"
   
 controller:
   metrics:
