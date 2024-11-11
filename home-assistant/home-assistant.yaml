@@ -1,49 +1,46 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: home-assistant
-#   namespace: default
-# spec:
-#   project: default
-#   source:
-#     chart: home-assistant
-#     repoURL: http://pajikos.github.io/home-assistant-helm-chart/
-#     targetRevision: 0.2.86
-#     helm:
-#       releaseName: home-assistant
-#       valuesObject:
-#         hostNetwork: true
-#         ingress:
-#           enabled: true
-#           className: nginx
-#           annotations:
-#             nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-#             nginx.ingress.kubernetes.io/ssl-passthrough: "true"
-#           hosts:
-#             - host: home-assistant.local
-#               paths:
-#                 - path: /
-#                   pathType: ImplementationSpecific
-#         persistence:
-#           enabled: true
-#           size: 10Gi
-#   destination:
-#     server: "https://kubernetes.default.svc"
-#     namespace: home-assistant
-
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: homeassist-apps
-  namespace: argocd
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
+  name: home-assistant
+  namespace: default
 spec:
+  project: home-assistant
+  source:
+    chart: home-assistant
+    repoURL: https://charts.pree.dev
+    # latest targetRevision - https://github.com/pree/helm-charts/blob/master/charts/home-assistant/Chart.yaml
+    targetRevision: 1.50.1
+    helm:
+      releaseName: home-assistant
+      valuesObject:
+        env:
+          TZ: America/Los_Angeles
+        hostNetwork: true
+        dnsPolicy: ClusterFirstWithHostNet
+        ingress:
+          main:
+            enabled: true
+        metrics:
+          enabled: true
+          prometheusRule:
+            enabled: true
+            rules:
+              - alert: HomeAssistantDown
+                annotations:
+                  description: >-
+                    Home Assistant has disappeared from Prometheus service
+                    discovery.
+                  summary: Home Assistant is down.
+                expr: |
+                  absent(up{job=~".*home-assistant.*"} == 1)
+                for: 30m
+                labels:
+                  severity: critical
+        persistence:
+          config:
+            enabled: true
+        postgresql:
+          enabled: true
   destination:
     namespace: home-assistant
-    server: "https://kubernetes.default.svc"
-  project: default
-  source:
-    path: ha-apps
-    repoURL: https://charts.pree.dev
-    targetRevision: HEAD
+    server: https://kubernetes.default.svc

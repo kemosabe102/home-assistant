@@ -12,7 +12,7 @@ apt-get install apache2-utils
 # Deploy
 
 ```shell
-helm upgrade -i --atomic --create-namespace -f "C:\projects\Personal\argo-cd\values.yaml" argocd argo/argo-cd
+helm upgrade -i --atomic --create-namespace -f "/c/projects/Personal/argo-cd/values.yaml" argocd argo/argo-cd
 ```
 
 ```shell
