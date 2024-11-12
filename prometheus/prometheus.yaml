@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: kube-prometheus-stack
+  name: prometheus
   namespace: argocd
 spec:
   project: home-assistant
@@ -9,25 +9,15 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ApplyOutOfSyncOnly=true
-      - ServerSideApply=true
   source:
-    chart: kube-prometheus-stack
+    chart: prometheus
     repoURL: https://prometheus-community.github.io/helm-charts
-    # latest targetRevision - https://artifacthub.io/packages/helm/prometheus-community/kube-prometheus-stack
-    targetRevision: 66.1.0
+    # latest targetRevision - https://artifacthub.io/packages/helm/prometheus-community/prometheus
+    targetRevision: 25.29.0
     helm:
-      releaseName: kube-prometheus-stack
+      releaseName: prometheus
       valuesObject:
-        grafana:
-          ingress:
-            enabled: true
-            annotations:
-              kubernetes.io/ingress.class: "nginx"
-              nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-              nginx.ingress.kubernetes.io/ssl-passthrough: "true"  
-            hosts:
-              - grafana.local
-        prometheus:
+        server:
           ingress:
             enabled: true
             annotations:
@@ -36,7 +26,7 @@ spec:
               nginx.ingress.kubernetes.io/ssl-passthrough: "true"  
             hosts:
               - prometheus.local
-        nodeExporter:
+        prometheus-node-exporter:
           enabled: false
   destination:
     namespace: prometheus
