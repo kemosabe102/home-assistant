@@ -5,6 +5,10 @@ metadata:
   namespace: argocd
 spec:
   project: home-assistant
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
   source:
     chart: home-assistant
     repoURL: https://charts.pree.dev
