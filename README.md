@@ -12,9 +12,9 @@ apt-get install apache2-utils
 # Deploy
 
 ```shell
-helm upgrade -i --atomic --create-namespace -f "/c/projects/Personal/argo-cd/values.yaml" argocd argo/argo-cd
+helm upgrade -i --atomic --create-namespace -n argocd -f "/c/projects/Personal/argo-cd/values.yaml" argocd argo/argo-cd
 ```
 
 ```shell
-helm install nginx ingress-nginx/ingress-nginx
+helm upgrade -i --atomic --create-namespace -n argocd nginx ingress-nginx/ingress-nginx
 ```
