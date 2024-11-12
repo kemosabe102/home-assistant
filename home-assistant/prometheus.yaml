@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus
+  namespace: argocd
+spec:
+  project: home-assistant
+  source:
+    chart: prometheus
+    repoURL: https://prometheus-community.github.io/helm-charts
+    # latest targetRevision - https://artifacthub.io/packages/helm/prometheus-community/prometheus
+    targetRevision: 25.29.0
+    helm:
+      releaseName: prometheus
+      valuesObject:
+        server:
+          ingress:
+            enabled: true      
+            hosts:
+              - prometheus.local
+  destination:
+    namespace: home-assistant
+    server: https://kubernetes.default.svc
