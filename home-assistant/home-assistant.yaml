@@ -23,6 +23,8 @@ spec:
         # https://github.com/pajikos/home-assistant-helm-chart?tab=readme-ov-file#hostport-and-hostnetwork
         hostNetwork: false
         dnsPolicy: Default
+        service:
+          port: 80
         ingress:
           enabled: true
           annotations:
