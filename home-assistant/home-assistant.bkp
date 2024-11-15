@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: home-assistant
+  namespace: argocd
+spec:
+  project: home-assistant
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
+  source:
+    chart: home-assistant
+    repoURL: http://pajikos.github.io/home-assistant-helm-chart/
+    # latest targetRevision - https://github.com/pajikos/home-assistant-helm-chart/blob/main/charts/home-assistant/Chart.yaml
+    targetRevision: 0.2.86
+    helm:
+      releaseName: home-assistant
+      valuesObject:
+        env:
+          - name: TZ
+            value: America/Los_Angeles
+        # https://github.com/pajikos/home-assistant-helm-chart?tab=readme-ov-file#hostport-and-hostnetwork
+        hostNetwork: false
+        dnsPolicy: Default
+        service:
+          port: 80
+        ingress:
+          enabled: true
+          annotations:
+            kubernetes.io/ingress.class: "nginx"
+            nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+            nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+          hosts:
+            - host: home-assistant.local
+              paths:
+                - path: /
+                  pathType: ImplementationSpecific
+        persistence:
+          enabled: true
+          size: 10Gi
+  destination:
+    namespace: home-assistant
+    server: https://kubernetes.default.svc
