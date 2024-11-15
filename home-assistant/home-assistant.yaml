@@ -20,8 +20,9 @@ spec:
         env:
           - name: TZ
             value: America/Los_Angeles
-        hostNetwork: true
-        dnsPolicy: ClusterFirstWithHostNet
+        # https://github.com/pajikos/home-assistant-helm-chart?tab=readme-ov-file#hostport-and-hostnetwork
+        hostNetwork: false
+        dnsPolicy: Default
         ingress:
           enabled: true
           annotations:
